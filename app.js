@@ -1,9 +1,13 @@
 document.getElementById("scream").onload = function () {
     let c = document.getElementById("myCanvas");
-    let ctx = c.getContext("2d");
     let img = document.getElementById("scream");
+    c.width = img.width;
+    c.height = img.height;
+    let ctx = c.getContext("2d");
     ctx.drawImage(img, 0, 0);
+
     let imgData = ctx.getImageData(0, 0, c.width, c.height);
+    console.log(imgData);
     // invert colors
     let i;
     for (i = 0; i < imgData.data.length; i += 4) {
