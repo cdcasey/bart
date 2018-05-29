@@ -1,10 +1,11 @@
 document.getElementById("scream").onload = function () {
     let c = document.getElementById("myCanvas");
     let img = document.getElementById("scream");
-    c.width = img.width;
-    c.height = img.height;
+    c.width = img.width / 2;
+    c.height = img.height / 2;
     let ctx = c.getContext("2d");
-    ctx.drawImage(img, 0, 0);
+    ctx.drawImage(img, 0, 0, img.width, img.height,
+        0, 0, c.width, c.height);
 
     let imgData = ctx.getImageData(0, 0, c.width, c.height);
     console.log(imgData);
