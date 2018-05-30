@@ -1,8 +1,10 @@
 document.getElementById("scream").onload = function () {
     const desaturateButton = document.getElementById('desaturate');
     const redSlider = document.getElementById('red');
-    const redDisplay = document.getElementById('red-val');
-    redDisplay.innerText = redSlider.value;
+    const greenSlider = document.getElementById('green');
+    const blueSlider = document.getElementById('blue');
+    // const redDisplay = document.getElementById('red-val');
+    // redDisplay.innerText = redSlider.value;
 
     desaturateButton.addEventListener('click', desaturate);
     let c = document.getElementById("myCanvas");
@@ -21,7 +23,7 @@ document.getElementById("scream").onload = function () {
         let red = imgData.data[i];
         let green = imgData.data[i + 1];
         let blue = imgData.data[i + 2];
-        if (red > green && red > blue) {
+        if (red - green > 50 && red - blue > 50) {
             reds.push(i)
         } else if (green > red && green > blue) {
             greens.push(i + 1)
@@ -30,18 +32,51 @@ document.getElementById("scream").onload = function () {
         }
     }
     redSlider.oninput = function () {
-        redDisplay.innerHTML = this.value;
+        // redDisplay.innerHTML = this.value;
+        const adjust = Math.floor(255 * (this.value / 100));
+        // console.log(adjust);
 
         for (let i = 0; i < reds.length; i++) {
-            const red = reds[i];
+            const redIndex = reds[i];
+            // imgData.data[redIndex] += adjust;
+            // imgData.data[redIndex + 1] += adjust;
+            // imgData.data[redIndex + 2] += adjust;
             if (this.value > 0) {
-                imgData.data[red] += (255 - imgData.data[red]) * (this.value / 100);
+                imgData.data[redIndex] += (255 - imgData.data[redIndex]) * (this.value / 100);
             } else {
-                imgData.data[red] -= imgData.data[red] * Math.abs(this.value / 100);
+                imgData.data[redIndex] -= imgData.data[redIndex] * Math.abs(this.value / 100);
             }
         }
         ctx.putImageData(imgData, 0, 0);
-        // desaturate();
+        desaturate();
+    }
+    greenSlider.oninput = function () {
+        // greenDisplay.innerHTML = this.value;
+
+        for (let i = 0; i < greens.length; i++) {
+            const green = greens[i];
+            if (this.value > 0) {
+                imgData.data[green] += (255 - imgData.data[green]) * (this.value / 100);
+            } else {
+                imgData.data[green] -= imgData.data[green] * Math.abs(this.value / 100);
+            }
+        }
+        ctx.putImageData(imgData, 0, 0);
+        desaturate();
+    }
+    blueSlider.oninput = function () {
+        // blueDisplay.innerHTML = this.value;
+
+        for (let i = 0; i < blues.length; i++) {
+            const blue = blues[i];
+            if (this.value > 0) {
+                imgData.data[blue] += (255 - imgData.data[blue]) * (this.value / 100);
+            } else {
+                imgData.data[blue] -= imgData.data[blue] * Math.abs(this.value / 100);
+            }
+        }
+        ctx.putImageData(imgData, 0, 0);
+        desaturate();
     }
     // desaturate();
     // imgData = desaturate(ctx);
