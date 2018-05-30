@@ -25,9 +25,9 @@ document.getElementById("scream").onload = function () {
         let blue = imgData.data[i + 2];
         if (red - green > 50 && red - blue > 50) {
             reds.push(i)
-        } else if (green > red && green > blue) {
+        } else if (green - red > 50 && green - blue > 50) {
             greens.push(i + 1)
-        } else if (blue > red && blue > green) {
+        } else if (blue - red > 50 && blue - green > 50) {
             blues.push(i + 2)
         }
     }
@@ -119,8 +119,8 @@ document.getElementById("scream").onload = function () {
             let green = data[i + 1];
             let blue = data[i + 2];
             let alpha = data[i + 3];
-            const avg = (red + green + blue) / 3;
-            // const avg = red * .2125 + green * .7154 + blue * .0721;
+            // const avg = (red + green + blue) / 3;
+            const avg = red * .2125 + green * .7154 + blue * .0721;
             data[i] = data[i + 1] = data[i + 2] = avg;
             // data[i] = red * .2125 + green * .7154 + blue * .0721;
             // data[i + 1] = red * .2125 + green * .7154 + blue * .0721;
