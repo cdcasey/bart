@@ -3,6 +3,18 @@ document.getElementById("scream").onload = function () {
     const redSlider = document.getElementById('red');
     const greenSlider = document.getElementById('green');
     const blueSlider = document.getElementById('blue');
+    const historyTarget = document.getElementById('history-target');
+    // historyTarget.addEventListener('mouseup', addHistory);
+    const history = [];
+    let currentLife = 0;
+    let isDesaturated = false;
+    let mouseDown = false;
+    document.body.onmousedown = function () {
+        mouseDown = true;
+    }
+    document.body.onmouseup = function () {
+        mouseDown = false;
+    }
     // const redDisplay = document.getElementById('red-val');
     // redDisplay.innerText = redSlider.value;
 
@@ -16,6 +28,7 @@ document.getElementById("scream").onload = function () {
         0, 0, c.width, c.height);
 
     let imgData = ctx.getImageData(0, 0, c.width, c.height);
+    addHistory(imgData.data);
     let reds = [];
     let greens = [];
     let blues = [];
@@ -47,8 +60,12 @@ document.getElementById("scream").onload = function () {
                 imgData.data[redIndex] -= imgData.data[redIndex] * Math.abs(this.value / 100);
             }
         }
+
         ctx.putImageData(imgData, 0, 0);
         desaturate();
+        this.onmouseup = () => {
+            addHistory(imgData.data);
+        }
     }
     greenSlider.oninput = function () {
         // greenDisplay.innerHTML = this.value;
@@ -63,6 +80,9 @@ document.getElementById("scream").onload = function () {
         }
         ctx.putImageData(imgData, 0, 0);
         desaturate();
+        this.onmouseup = () => {
+            addHistory(imgData.data);
+        }
     }
     blueSlider.oninput = function () {
         // blueDisplay.innerHTML = this.value;
@@ -77,6 +97,9 @@ document.getElementById("scream").onload = function () {
         }
         ctx.putImageData(imgData, 0, 0);
         desaturate();
+        this.onmouseup = () => {
+            addHistory(imgData.data);
+        }
     }
     // desaturate();
     // imgData = desaturate(ctx);
@@ -111,6 +134,10 @@ document.getElementById("scream").onload = function () {
     function desaturate(event) {
         imgData.data = removeColor(imgData.data);
         ctx.putImageData(imgData, 0, 0);
+        if (!isDesaturated) {
+            addHistory(imgData.data);
+            isDesaturated = true;
+        }
     }
     function removeColor(data) {
         for (let i = 0; i < data.length; i += 4) {
@@ -129,11 +156,12 @@ document.getElementById("scream").onload = function () {
         return data;
     }
 
-    for (let i = 0; i < imgData.data.length; i += 4) {
-        const element = imgData.data[i];
-        // imgData.data[i + 3] = element * 2;
+    function addHistory(data) {
+        history.push(data.slice());
+        console.log(history);
+
+        currentLife++;
     }
-    console.log(imgData);
 
     ctx.putImageData(imgData, 0, 0);
 };
