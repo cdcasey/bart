@@ -1,20 +1,15 @@
 document.getElementById("scream").onload = function () {
     const desaturateButton = document.getElementById('desaturate');
+    const undoButton = document.getElementById('undo');
     const redSlider = document.getElementById('red');
     const greenSlider = document.getElementById('green');
     const blueSlider = document.getElementById('blue');
     const historyTarget = document.getElementById('history-target');
     // historyTarget.addEventListener('mouseup', addHistory);
     const history = [];
-    let currentLife = 0;
+    let currentLife = -1;
     let isDesaturated = false;
-    let mouseDown = false;
-    document.body.onmousedown = function () {
-        mouseDown = true;
-    }
-    document.body.onmouseup = function () {
-        mouseDown = false;
-    }
+
     // const redDisplay = document.getElementById('red-val');
     // redDisplay.innerText = redSlider.value;
 
@@ -36,11 +31,11 @@ document.getElementById("scream").onload = function () {
         let red = imgData.data[i];
         let green = imgData.data[i + 1];
         let blue = imgData.data[i + 2];
-        if (red - green > 50 && red - blue > 50) {
+        if (red - green > 25 && red - blue > 25) {
             reds.push(i)
-        } else if (green - red > 50 && green - blue > 50) {
+        } else if (green - red > 25 && green - blue > 25) {
             greens.push(i + 1)
-        } else if (blue - red > 50 && blue - green > 50) {
+        } else if (blue - red > 25 && blue - green > 25) {
             blues.push(i + 2)
         }
     }
@@ -60,9 +55,9 @@ document.getElementById("scream").onload = function () {
                 imgData.data[redIndex] -= imgData.data[redIndex] * Math.abs(this.value / 100);
             }
         }
-
         ctx.putImageData(imgData, 0, 0);
         desaturate();
+
         this.onmouseup = () => {
             addHistory(imgData.data);
         }
@@ -155,7 +150,20 @@ document.getElementById("scream").onload = function () {
         }
         return data;
     }
-
+    undoButton.addEventListener('click', () => {
+        if (currentLife === 0) {
+            alert('Already at earliest state');
+        } else {
+            redSlider.value = greenSlider.value = blueSlider.value = 0;
+            history.pop();
+            for (let i = 0; i < history[history.length - 1].length; i++) {
+                const element = history[history.length - 1][i];
+                imgData.data[i] = element;
+            }
+            ctx.putImageData(imgData, 0, 0);
+            currentLife--;
+        }
+    });
     function addHistory(data) {
         history.push(data.slice());
         console.log(history);
@@ -165,4 +173,3 @@ document.getElementById("scream").onload = function () {
 
     ctx.putImageData(imgData, 0, 0);
 };
-
