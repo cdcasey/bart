@@ -166,8 +166,6 @@ document.getElementById("scream").onload = function () {
     });
     function addHistory(data) {
         history.push(data.slice());
-        console.log(history);
-
         currentLife++;
     }
 
