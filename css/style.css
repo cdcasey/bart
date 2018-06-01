@@ -50,6 +50,10 @@ img {
   background: #2100ff;
 }
 
+#contrast::-webkit-slider-thumb {
+  background: black;
+}
+
 .slider::-moz-range-thumb {
   width: 25px;
   height: 25px;
@@ -68,4 +72,8 @@ img {
 
 #blue::-moz-range-thumb {
   background: #2100ff;
+}
+
+#contrast::-moz-slider-thumb {
+  background: black;
 }

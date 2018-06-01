@@ -4,6 +4,7 @@ document.getElementById("scream").onload = function () {
     const redSlider = document.getElementById('red');
     const greenSlider = document.getElementById('green');
     const blueSlider = document.getElementById('blue');
+    const contrastSlider = document.getElementById('contrast');
     const historyTarget = document.getElementById('history-target');
     // historyTarget.addEventListener('mouseup', addHistory);
     const history = [];
@@ -12,7 +13,7 @@ document.getElementById("scream").onload = function () {
 
     // const redDisplay = document.getElementById('red-val');
     // redDisplay.innerText = redSlider.value;
-
+    // contrastSlider.addEventListener('oninput', adjustContrast);
     desaturateButton.addEventListener('click', desaturate);
     let c = document.getElementById("myCanvas");
     let img = document.getElementById("scream");
@@ -40,8 +41,8 @@ document.getElementById("scream").onload = function () {
         }
     }
     redSlider.oninput = function () {
-        // redDisplay.innerHTML = this.value;
-        const adjust = Math.floor(255 * (this.value / 100));
+        // redDisplay.innerHTML = Number(this.value);
+        const adjust = Math.floor(255 * (Number(this.value) / 100));
         // console.log(adjust);
 
         for (let i = 0; i < reds.length; i++) {
@@ -49,10 +50,10 @@ document.getElementById("scream").onload = function () {
             // imgData.data[redIndex] += adjust;
             // imgData.data[redIndex + 1] += adjust;
             // imgData.data[redIndex + 2] += adjust;
-            if (this.value > 0) {
-                imgData.data[redIndex] += (255 - imgData.data[redIndex]) * (this.value / 100);
+            if (Number(this.value) > 0) {
+                imgData.data[redIndex] += (255 - imgData.data[redIndex]) * (Number(this.value) / 100);
             } else {
-                imgData.data[redIndex] -= imgData.data[redIndex] * Math.abs(this.value / 100);
+                imgData.data[redIndex] -= imgData.data[redIndex] * Math.abs(Number(this.value) / 100);
             }
         }
         ctx.putImageData(imgData, 0, 0);
@@ -63,14 +64,14 @@ document.getElementById("scream").onload = function () {
         }
     }
     greenSlider.oninput = function () {
-        // greenDisplay.innerHTML = this.value;
+        // greenDisplay.innerHTML = Number(this.value);
 
         for (let i = 0; i < greens.length; i++) {
             const green = greens[i];
-            if (this.value > 0) {
-                imgData.data[green] += (255 - imgData.data[green]) * (this.value / 100);
+            if (Number(this.value) > 0) {
+                imgData.data[green] += (255 - imgData.data[green]) * (Number(this.value) / 100);
             } else {
-                imgData.data[green] -= imgData.data[green] * Math.abs(this.value / 100);
+                imgData.data[green] -= imgData.data[green] * Math.abs(Number(this.value) / 100);
             }
         }
         ctx.putImageData(imgData, 0, 0);
@@ -80,14 +81,14 @@ document.getElementById("scream").onload = function () {
         }
     }
     blueSlider.oninput = function () {
-        // blueDisplay.innerHTML = this.value;
+        // blueDisplay.innerHTML = Number(this.value);
 
         for (let i = 0; i < blues.length; i++) {
             const blue = blues[i];
-            if (this.value > 0) {
-                imgData.data[blue] += (255 - imgData.data[blue]) * (this.value / 100);
+            if (Number(this.value) > 0) {
+                imgData.data[blue] += (255 - imgData.data[blue]) * (Number(this.value) / 100);
             } else {
-                imgData.data[blue] -= imgData.data[blue] * Math.abs(this.value / 100);
+                imgData.data[blue] -= imgData.data[blue] * Math.abs(Number(this.value) / 100);
             }
         }
         ctx.putImageData(imgData, 0, 0);
@@ -154,7 +155,7 @@ document.getElementById("scream").onload = function () {
         if (currentLife === 0) {
             alert('Already at earliest state');
         } else {
-            redSlider.value = greenSlider.value = blueSlider.value = 0;
+            redSlider.value = greenSlider.value = blueSlider.value = contrastSlider.value = 0;
             history.pop();
             for (let i = 0; i < history[history.length - 1].length; i++) {
                 const element = history[history.length - 1][i];
@@ -164,6 +165,36 @@ document.getElementById("scream").onload = function () {
             currentLife--;
         }
     });
+    contrastSlider.oninput = function adjustContrast() {
+        const adjust = Math.pow((Number(this.value) + 100) / 100, 2);
+        for (let i = 0; i < imgData.data.length; i += 4) {
+            let red = imgData.data[i];
+            let green = imgData.data[i + 1];
+            let blue = imgData.data[i + 2];
+            red /= 255;
+            red -= 0.5;
+            red *= adjust;
+            red += 0.5;
+            red *= 255;
+            imgData.data[i] = red;
+            green /= 255;
+            green -= 0.5;
+            green *= adjust;
+            green += 0.5;
+            green *= 255;
+            imgData.data[i + 1] = green;
+            blue /= 255;
+            blue -= 0.5;
+            blue *= adjust;
+            blue += 0.5;
+            blue *= 255;
+            imgData.data[i + 2] = blue;
+        }
+        ctx.putImageData(imgData, 0, 0);
+        this.onmouseup = () => {
+            addHistory(imgData.data);
+        }
+    }
     function addHistory(data) {
         history.push(data.slice());
         currentLife++;
