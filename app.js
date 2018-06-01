@@ -5,6 +5,7 @@ document.getElementById("scream").onload = function () {
     const greenSlider = document.getElementById('green');
     const blueSlider = document.getElementById('blue');
     const contrastSlider = document.getElementById('contrast');
+    const brightnessSlider = document.getElementById('brightness');
     const historyTarget = document.getElementById('history-target');
     // historyTarget.addEventListener('mouseup', addHistory);
     const history = [];
@@ -151,11 +152,12 @@ document.getElementById("scream").onload = function () {
         }
         return data;
     }
+
     undoButton.addEventListener('click', () => {
         if (currentLife === 0) {
             alert('Already at earliest state');
         } else {
-            redSlider.value = greenSlider.value = blueSlider.value = contrastSlider.value = 0;
+            redSlider.value = greenSlider.value = blueSlider.value = contrastSlider.value = brightnessSlider.value = 0;
             history.pop();
             for (let i = 0; i < history[history.length - 1].length; i++) {
                 const element = history[history.length - 1][i];
@@ -165,6 +167,7 @@ document.getElementById("scream").onload = function () {
             currentLife--;
         }
     });
+
     contrastSlider.oninput = function adjustContrast() {
         const adjust = Math.pow((Number(this.value) + 100) / 100, 2);
         for (let i = 0; i < imgData.data.length; i += 4) {
@@ -195,6 +198,20 @@ document.getElementById("scream").onload = function () {
             addHistory(imgData.data);
         }
     }
+
+    brightnessSlider.oninput = function adjustBrightness() {
+        const adjust = Math.floor(255 * (this.value / 100));
+        for (let i = 0; i < imgData.data.length; i += 4) {
+            imgData.data[i] += adjust;
+            imgData.data[i + 1] += adjust;
+            imgData.data[i + 2] += adjust;
+        }
+        ctx.putImageData(imgData, 0, 0);
+        this.onmouseup = () => {
+            addHistory(imgData.data);
+        }
+    }
+
     function addHistory(data) {
         history.push(data.slice());
         currentLife++;

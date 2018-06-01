@@ -54,6 +54,10 @@ img {
   background: black;
 }
 
+#brightness::-webkit-slider-thumb {
+  background: #ededed;
+}
+
 .slider::-moz-range-thumb {
   width: 25px;
   height: 25px;
@@ -76,4 +80,8 @@ img {
 
 #contrast::-moz-slider-thumb {
   background: black;
+}
+
+#brightness::-moz-slider-thumb {
+  background: whitesmoke;
 }
